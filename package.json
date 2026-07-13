@@ -1,0 +1,12 @@
+{
+  "name": "neoxr-oss-oauth",
+  "version": "1.0.0",
+  "description": "OAuth Gateway for Google and GitHub",
+  "scripts": {
+    "dev": "wrangler pages dev ./public",
+    "deploy": "wrangler pages deploy ./public"
+  },
+  "devDependencies": {
+    "wrangler": "^3.91.0"
+  }
+}

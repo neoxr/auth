@@ -1,0 +1,7 @@
+name = "neoxr-oss"
+compatibility_date = "2026-07-13"
+pages_build_output_dir = "./public"
+
+[vars]
+GITHUB_CLIENT_ID = "Ov23liOGjFkQxEoXktQU"
+GOOGLE_CLIENT_ID = "881175145119-8kjrs9e5umv5j5qj6s9c0p33mj7pb582.apps.googleusercontent.com"

@@ -1,0 +1,26 @@
+export async function onRequest(context) {
+   const { request, env } = context
+   const url = new URL(request.url)
+   const redirectTo = url.searchParams.get("redirect_to")
+
+   if (!redirectTo) {
+      return new Response("Parameter redirect_to wajib diisi", { status: 400 })
+   }
+
+   const allowedDomains = ["api.neoxr.eu", "shop.neoxr.eu"]
+   try {
+      const targetUrl = new URL(redirectTo)
+      if (!allowedDomains.includes(targetUrl.host)) {
+         return new Response("Domain tujuan tidak diizinkan", { status: 403 })
+      }
+   } catch (e) {
+      return new Response("URL tujuan tidak valid", { status: 400 })
+   }
+
+   const state = btoa(JSON.stringify({ redirect_to: redirectTo }))
+   const clientId = env.GOOGLE_CLIENT_ID
+   const gatewayCallback = "https://auth.neoxr.eu/api/auth/google/callback"
+   const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(gatewayCallback)}&response_type=code&scope=openid%20profile%20email&state=${state}`
+
+   return Response.redirect(googleAuthUrl, 302)
+}
