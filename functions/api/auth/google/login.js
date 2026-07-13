@@ -1,10 +1,14 @@
 export async function onRequest(context) {
    const { request, env } = context
    const url = new URL(request.url)
-   const redirectTo = url.searchParams.get("redirect_to")
+   let redirectTo = url.searchParams.get("redirect_to")
 
    if (!redirectTo) {
       return new Response("Parameter redirect_to wajib diisi", { status: 400 })
+   }
+
+   if (!redirectTo.startsWith("http://") && !redirectTo.startsWith("https://")) {
+      redirectTo = "https://" + redirectTo
    }
 
    const allowedDomains = ["api.neoxr.eu", "shop.neoxr.eu"]
@@ -19,7 +23,7 @@ export async function onRequest(context) {
 
    const state = btoa(JSON.stringify({ redirect_to: redirectTo }))
    const clientId = env.GOOGLE_CLIENT_ID
-   const gatewayCallback = "https://auth.neoxr.eu/api/auth/google/callback"
+   const gatewayCallback = `${url.origin}/api/auth/google/callback`
    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(gatewayCallback)}&response_type=code&scope=openid%20profile%20email&state=${state}`
 
    return Response.redirect(googleAuthUrl, 302)
